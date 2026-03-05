@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
+  
+  <link rel="apple-touch-icon" href="https://em-content.zobj.net/source/apple/419/chains_26d3-fe0f.png">
+  <link rel="icon" sizes="192x192" href="https://em-content.zobj.net/source/apple/419/chains_26d3-fe0f.png">
+  <link rel="shortcut icon" href="https://em-content.zobj.net/source/apple/419/chains_26d3-fe0f.png">
+  
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <style>
+    body {
+      font-family: 'Chakra Petch', sans-serif;
+    }
+    /* Grid Background Pattern */
+    .bg-grid {
+      background-image: 
+        linear-gradient(rgba(30, 58, 138, 0.2) 1px, transparent 1px), 
+        linear-gradient(90deg, rgba(30, 58, 138, 0.2) 1px, transparent 1px);
+      background-size: 30px 30px;
+      background-position: center center;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useMemo, useEffect, useCallback } = React;
+
+    // ==========================================
+    // 🖼️ COMPONENTS: ไอคอน SVG ทั้งหมดของเว็บ
+    // ==========================================
+    const IconPlus = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>;
+    const IconHome = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>;
+    const IconSearch = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>;
+    const IconClock = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>;
+    const IconCheck = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"></polyline></svg>;
+    const IconFileText = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>;
+    const IconCalendar = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>;
+    const IconLoader = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>;
+    const IconEye = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>;
+    const IconEyeOff = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>;
+    const IconImage = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>;
+    const IconList = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>;
+    const IconChevronLeft = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="15 18 9 12 15 6"></polyline></svg>;
+    const IconChevronRight = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"></polyline></svg>;
+    const IconTrash = ({size=24, className=""}) => <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>;
+
+    // ==========================================
+    // 🎨 ตัวแปรสีหลัก (COLORS Object) - Sci-Fi Theme
+    // ==========================================
+    const COLORS = {
+      blue: '#1E3A8A',       // Deep tech blue
+      pink: '#0F172A',       // Dark surface
+      purple: '#1E40AF',     // Dark accent blue
+      orange: '#0284C7',     // Cyan tech
+      bg: '#040914',         // ⭐ สีพื้นหลังหลัก (Midnight dark)
+      white: '#38BDF8',      // Neon Cyan
+      textMain: '#F8FAFC',   // ⭐ สีข้อความหลัก
+      textSoft: '#94A3B8',   // สีข้อความรอง
+      pinkDeep: '#38BDF8',   // สี accent เข้ม (Neon Cyan)
+      blueDeep: '#60A5FA',   // สี accent เข้ม (Neon Blue)
+      purpleDeep: '#7DD3FC', // สี accent เข้ม (Light Cyan)
+      orangeDeep: '#38BDF8', // สี accent เข้ม (Neon Cyan)
+      cardBg: '#09101E',     // ⭐ สีพื้นหลังการ์ดงาน (todo/doing)
+      cardBgDone: '#050A12', // ⭐ สีพื้นหลังการ์ดงาน (done)
+      
+      cardWhite: '#09101E',       // ⭐ สีพื้นหลังการ์ดหลัก
+      cardBorder: '#1E3A8A',      // ⭐ สีขอบการ์ดทั่วไป (Tech Blue)
+      cardInner: '#0F172A',       // ⭐ สีพื้นหลังภายในการ์ด
+      cloudWhite: 'transparent',  // ปิดก้อนเมฆ
+      modalBg: '#0A1120',         // ⭐ สีพื้นหลัง modal
+      navBarBg: '#0A1120',        // ⭐ สีพื้นหลัง Navigation Bar ล่าง
+      profileBorder: '#38BDF8',   // ⭐ สีขอบรูปโปรไฟล์
+      buttonBg: '#0F172A',        // ⭐ สีพื้นหลังปุ่ม
+      dividerColor: '#1E3A8A',    // ⭐ สีเส้นแบ่ง
+      emptyStateBg: '#0F172A',    // ⭐ สีพื้นหลังเมื่อไม่มีข้อมูล
+      calendarBg: '#09101E',      // ⭐ สีพื้นหลังปฏิทิน
+      searchInputBg: '#0F172A',   // ⭐ สีพื้นหลังช่องค้นหา
+      filterBarBg: '#09101E',     // ⭐ สีพื้นหลังแถบ filter
+      bannerOverlayBg: '#050A12', // ⭐ สีพื้นหลังปุ่มบนแบนเนอร์
+    };
+
+    // ==========================================
+    // 🌅 COMPONENT: DynamicBackground (พื้นหลังเคลื่อนไหว)
+    // ==========================================
+    const DynamicBackground = React.memo(() => (
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0" style={{ backgroundColor: COLORS.bg }}>
+        {/* Grid Overlay */}
+        <div className="absolute inset-0 bg-grid opacity-60"></div>
+        {/* Neon Globs */}
+        <div className="absolute top-[10%] left-[-10%] w-72 h-72 rounded-full blur-[100px] opacity-20 animate-float" style={{ backgroundColor: COLORS.blueDeep }}></div>
+        <div className="absolute bottom-[10%] right-[-10%] w-80 h-80 rounded-full blur-[120px] opacity-10 animate-float-reverse" style={{ backgroundColor: COLORS.purpleDeep }}></div>
+        <div className="absolute top-[40%] right-[10%] w-48 h-48 rounded-full blur-[90px] opacity-15 animate-float" style={{ backgroundColor: COLORS.pinkDeep }}></div>
+      </div>
+    ));
+
+    // ==========================================
+    // 🔝 COMPONENT: Header (ส่วนหัวเว็บ)
+    // ==========================================
+    const Header = React.memo(({ isAdmin, setIsAdmin, setShowAuthModal, handleImageUpload, profileImage }) => (
+      <div className="px-5 pt-6 pb-2 relative z-10">
+        <div className="backdrop-blur-md rounded-xl p-4 shadow-[0_0_15px_rgba(30,58,138,0.3)] flex items-center justify-between h-20 relative overflow-hidden group" style={{ backgroundColor: `${COLORS.cardWhite}E6`, borderWidth: '1px', borderColor: COLORS.cardBorder }}>
+          <div className="absolute left-0 top-0 w-1 h-full bg-[#38BDF8] shadow-[0_0_10px_#38BDF8]"></div>
+          <div className="absolute left-6 top-1/2 -translate-y-1/2 w-24 h-8 bg-[#38BDF8]/10 blur-xl rounded-full"></div>
+          
+          <div className="flex flex-col justify-center ml-4 relative z-10">
+            <div className="flex items-center gap-1">
+             <h1 className="text-2xl font-black italic tracking-wider flex text-white drop-shadow-[0_0_8px_rgba(56,189,248,0.8)]">
+              {"KOSAME_WEBAPP".split('').map((char, index) => (
+                <span 
+                  key={index} 
+                  className={`inline-block pb-1 ${char === ' ' ? 'w-2.5' : 'pr-[1.5px]'}`} 
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  {char}
+                </span>
+              ))}
+            </h1>
+              <button onClick={() => isAdmin ? setIsAdmin(false) : setShowAuthModal(true)} className={`px-1.5 py-0.5 ml-2 rounded-[4px] text-[7px] font-black uppercase tracking-widest border transition-all active:scale-95`} style={{ backgroundColor: isAdmin ? `${COLORS.buttonBg}99` : `${COLORS.buttonBg}cc`, color: isAdmin ? '#38BDF8' : '#64748B', borderColor: isAdmin ? '#38BDF8' : '#1E3A8A', boxShadow: isAdmin ? '0 0 5px rgba(56,189,248,0.4)' : 'none' }}>
+                {isAdmin ? 'SYS.ADMIN' : 'GUEST'}
+              </button>
+            </div>
+            <div className="flex items-center gap-1.5 opacity-80 mt-0.5">
+              <div className="w-4 h-[1px]" style={{ backgroundColor: COLORS.pinkDeep }}></div>
+              <p className="text-[9px] font-bold tracking-[0.3em] uppercase text-[#60A5FA]">SYS.VER.1.2.5</p>
+            </div>
+          </div>
+          
+          <div onClick={isAdmin ? handleImageUpload : undefined} className={`w-14 h-14 rounded-md flex items-center justify-center relative overflow-hidden transition-transform ${isAdmin ? 'cursor-pointer hover:scale-105 active:scale-95' : ''}`} style={{ backgroundColor: COLORS.cardInner, borderWidth: '1px', borderColor: COLORS.profileBorder, boxShadow: '0 0 10px rgba(56,189,248,0.3)' }}>
+            {profileImage ? (
+              <img src={profileImage} alt="Profile" className="w-full h-full object-cover grayscale-[20%] contrast-125" />
+            ) : (
+              <>
+                <div className="absolute inset-0 opacity-20" style={{ background: `linear-gradient(to top right, ${COLORS.blueDeep}, ${COLORS.pinkDeep})` }}></div>
+                <span className="text-xl relative z-10 select-none opacity-80">🤖</span>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    ));
+
+    // ==========================================
+    // 🛡️ COMPONENT: CyberSyncRing (วงแหวนประมวลผลข้อมูล)
+    // ==========================================
+    const CyberSyncRing = React.memo(({ progress, todayTasksLength, doneToday, triggerFlowerBounce, isBouncing }) => {
+      const isFullBloom = progress === 100 && todayTasksLength > 0;
+      const radius = 34; // รัศมีวงกลม
+      const circumference = 2 * Math.PI * radius;
+      // คำนวณความยาวเส้นรอบวงที่ต้องแสดง
+      const strokeDashoffset = circumference - (progress / 100) * circumference;
+
+      return (
+        <div onClick={triggerFlowerBounce} className={`rounded-xl p-3 flex flex-col items-center justify-center shadow-[0_0_15px_rgba(30,58,138,0.3)] h-full relative overflow-hidden transition-all duration-300 cursor-pointer ${isBouncing ? 'scale-95' : 'hover:border-[#38BDF8]'}`} style={{ backgroundColor: `${COLORS.cardWhite}F2`, borderWidth: '1px', borderColor: COLORS.cardBorder }}>
+          <div className="absolute top-2 left-3 text-[8px] font-bold uppercase tracking-widest opacity-80" style={{ color: COLORS.purpleDeep }}>CYBER SYNC</div>
+          
+          <div className="relative w-full h-20 flex items-center justify-center mt-2">
+            
+            {/* Background Glow ที่สว่างขึ้นเมื่อมีเปอร์เซ็นต์งาน */}
+            <div className={`absolute w-12 h-12 rounded-full blur-xl transition-all duration-700 ${progress > 0 ? 'bg-[#38BDF8]/20' : 'bg-transparent'} ${isFullBloom ? 'bg-[#38BDF8]/50 animate-pulse' : ''}`}></div>
+
+            <svg viewBox="0 0 100 100" className="w-24 h-24 overflow-visible -rotate-90">
+              {/* Outer Track (เส้นประวงนอกสีทึบ) */}
+              <circle cx="50" cy="50" r={radius} fill="none" stroke="#1E3A8A" strokeWidth="2" strokeDasharray="2 6" opacity="0.6" />
+              
+              {/* Inner Rotating Ring (วงแหวนหมุนด้านใน) */}
+              <circle cx="50" cy="50" r={radius - 8} fill="none" stroke="#60A5FA" strokeWidth="1" strokeDasharray="10 4 2 4" className={progress > 0 ? "animate-spin-slow" : ""} style={{ transformOrigin: 'center' }} opacity="0.5" />
+
+              {/* Foreground Progress Ring (แถบความคืบหน้าแบบค่อยๆ วิ่งเต็ม) */}
+              <circle 
+                cx="50" cy="50" r={radius} 
+                fill="none" 
+                stroke="#38BDF8" 
+                strokeWidth="4" 
+                strokeDasharray={circumference} 
+                strokeDashoffset={strokeDashoffset} 
+                strokeLinecap="round"
+                className="transition-all duration-1000 ease-out"
+                style={{ filter: isFullBloom ? 'drop-shadow(0 0 6px #38BDF8)' : 'drop-shadow(0 0 2px #38BDF8)' }}
+              />
+            </svg>
+
+            {/* Percentage Text (แสดงเปอร์เซ็นต์ตรงกลาง) */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none mt-1">
+              <span className={`text-xl font-black font-mono tracking-tighter ${isFullBloom ? 'text-white drop-shadow-[0_0_8px_#38BDF8]' : 'text-[#38BDF8]'}`}>
+                {progress}<span className="text-[10px] ml-0.5">%</span>
+              </span>
+            </div>
+            
+          </div>
+          
+          {/* แถบ Label ด้านล่าง */}
+          <div className="mt-1 flex items-center gap-1.5 px-3 py-1 rounded-[4px] z-10 border" style={{ backgroundColor: `${COLORS.buttonBg}`, borderColor: isFullBloom ? '#38BDF8' : COLORS.cardBorder, boxShadow: isFullBloom ? '0 0 10px rgba(56,189,248,0.2)' : 'none' }}>
+            <div className={`w-1.5 h-1.5 rounded-full ${isFullBloom ? 'bg-[#38BDF8] shadow-[0_0_5px_#38BDF8] animate-pulse' : progress > 0 ? 'bg-[#38BDF8]' : 'bg-[#1E3A8A]'}`}></div>
+            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{doneToday} / {todayTasksLength} SYNC</span>
+          </div>
+        </div>
+      );
+    });
+
+    // ==========================================
+    // 📊 COMPONENT: CompactStats (สถิติ)
+    // ==========================================
+    const CompactStats = React.memo(({ isAdmin, selectedNextDate, nextQueueDate, handleSetManualDate, waitingCount }) => (
+      <div className="rounded-xl p-1 shadow-[0_0_15px_rgba(30,58,138,0.3)] h-full flex overflow-hidden relative group transition-all" style={{ backgroundColor: `${COLORS.cardWhite}F2`, borderWidth: '1px', borderColor: COLORS.cardBorder }}>
+          <div className={`flex-1 flex flex-col justify-center items-center p-2 relative rounded-l-lg transition-colors overflow-hidden ${isAdmin ? 'hover:bg-[#0F172A] cursor-pointer' : ''}`} style={{ backgroundColor: `#08101E` }}>
+            {isAdmin && (
+              <input type="date" className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10" value={selectedNextDate || nextQueueDate} onChange={(e) => handleSetManualDate(e.target.value)} />
+            )}
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-[2px] text-[7px] font-black uppercase tracking-widest whitespace-nowrap border" style={{ color: COLORS.pinkDeep, backgroundColor: COLORS.buttonBg, borderColor: '#1E3A8A' }}>NXT QUEUE</div>
+            
+            <div className="flex flex-col items-center mt-2 relative z-0 pointer-events-none">
+              <span className="text-3xl font-black leading-none tracking-wider drop-shadow-[0_0_5px_rgba(56,189,248,0.5)]" style={{ color: COLORS.white }}>{new Date(nextQueueDate).getDate()}</span>
+              <span className="text-[9px] font-bold opacity-80 uppercase mt-1 tracking-widest" style={{ color: COLORS.textSoft }}>{new Date(nextQueueDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+            </div>
+
+            {isAdmin && selectedNextDate && (
+              <button 
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleSetManualDate(''); }} 
+                className="absolute bottom-1.5 left-1/2 -translate-x-1/2 z-20 px-2.5 py-0.5 rounded-[2px] text-[7px] font-black border hover:bg-[#1E293B] active:scale-90 transition-all tracking-widest"
+                style={{ color: COLORS.pinkDeep, backgroundColor: COLORS.buttonBg, borderColor: '#1E3A8A' }}
+              >
+                AUTO
+              </button>
+            )}
+          </div>
+
+          <div className="my-4" style={{ width: '1px', backgroundColor: COLORS.dividerColor }}></div>
+          
+          <div className="flex-1 flex flex-col justify-center items-center p-2 relative" style={{ backgroundColor: `#0A1120` }}>
+            <div className="absolute top-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-[2px] text-[7px] font-black uppercase tracking-widest whitespace-nowrap z-10 border" style={{ color: COLORS.blueDeep, backgroundColor: COLORS.buttonBg, borderColor: '#1E3A8A' }}>PENDING</div>
+            
+            <div className="relative mt-3 flex flex-col items-center">
+               <div className="relative">
+                 <div className="w-10 h-10 rounded-md flex flex-col items-center justify-center relative z-10" style={{ backgroundColor: COLORS.cardInner, borderWidth: '1px', borderColor: COLORS.cardBorder, boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)' }}>
+                    <span className="text-lg font-black leading-none drop-shadow-[0_0_3px_rgba(96,165,250,0.8)]" style={{ color: COLORS.blueDeep }}>{waitingCount}</span>
+                 </div>
+               </div>
+               <span className="text-[8px] font-bold opacity-60 uppercase mt-1.5 relative z-10 tracking-widest" style={{ color: COLORS.blueDeep }}>Q.</span>
+            </div>
+          </div>
+      </div>
+    ));
+
+    // ==========================================
+    // 🃏 COMPONENT: TaskCard (การ์ดงาน)
+    // ==========================================
+    const TaskCard = React.memo(({ task, isAdmin, onEdit, onToggleDoing, onToggleStatus }) => (
+      <div onClick={() => isAdmin && onEdit(task)} className={`relative mb-2 rounded-lg p-3 transition-all group ${isAdmin ? 'active:scale-[0.98] cursor-pointer' : ''}`} 
+        style={{ 
+          backgroundColor: task.status === 'done' ? COLORS.cardBgDone : COLORS.cardBg,
+          borderWidth: '1px',
+          borderStyle: 'solid',
+          // ซ่อนเส้นขอบแบบปกติถ้าอยู่ในสถานะ "กำลังทำ" เพื่อให้ไฟวิ่งทำหน้าที่แทน
+          borderColor: task.status === 'doing' ? 'transparent' : (task.status === 'done' ? '#0F172A' : COLORS.cardBorder), 
+          opacity: task.status === 'done' ? 0.5 : 1 
+        }}
+        >
+        
+        {/* 🔥 เอฟเฟกต์ไฟวิ่งรอบกรอบ (Running Glow Border) ทำงานเมื่อสถานะเป็น doing */}
+        {task.status === 'doing' && (
+           <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden rounded-lg">
+             {/* ตัวหมุน (Spinning gradient) */}
+             <div className="absolute top-1/2 left-1/2 w-[250%] h-[500%] -translate-x-1/2 -translate-y-1/2">
+                <div className="w-full h-full animate-spin-slow" style={{ background: 'conic-gradient(from 0deg, transparent 30%, #38BDF8 50%, transparent 80%, #38BDF8 100%)' }}></div>
+             </div>
+             {/* แผ่นทับตรงกลาง (Inner Cover) เพื่อให้แสงเหลือแค่ตรงขอบการ์ด */}
+             <div className="absolute inset-[1px] rounded-[7px] z-0" style={{ backgroundColor: COLORS.cardBg, boxShadow: 'inset 0 0 20px rgba(56,189,248,0.05)' }}></div>
+           </div>
+        )}
+        
+        {/* Channel Color Indicator */}
+        {/* เลื่อนชั้น z-index ขึ้นมาเป็น 10 เพื่อให้อยู่เหนือแผ่นทับของไฟวิ่ง */}
+        <div className="absolute left-[1px] top-3 bottom-3 w-1 rounded-r-md shadow-[0_0_5px_currentColor] z-10" style={{ backgroundColor: task.channel === 'LINE' ? '#4ADE80' : task.channel === 'FB' || task.channel === 'FACEBOOK' ? '#3B82F6' : task.channel === 'IG' ? '#F472B6' : COLORS.pinkDeep }}></div>
+        
+        {/* เนื้อหาภายในการ์ด ต้องมี z-10 เช่นกัน */}
+        <div className="pl-4 pr-1 relative z-10">
+          <div className="flex justify-between items-start mb-1">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="font-bold text-sm truncate tracking-wide" style={{ color: COLORS.textMain }}>{task.client}</span>
+              <span className={`text-[8px] px-1.5 py-0.5 rounded-[2px] font-black uppercase border ${
+                task.channel === 'LINE' ? 'text-[#4ADE80] bg-[#4ADE80]/10 border-[#4ADE80]/30' : 
+                task.channel === 'FB' || task.channel === 'FACEBOOK' ? 'text-[#3B82F6] bg-[#3B82F6]/10 border-[#3B82F6]/30' : 
+                task.channel === 'IG' ? 'text-[#F472B6] bg-[#F472B6]/10 border-[#F472B6]/30' : 
+                'bg-white/5 text-slate-400 border-slate-700'
+              }`}>{task.channel}</span>
+              {task.priority === 'urgent' && <span className="text-[8px] font-bold animate-pulse px-2 py-0.5 rounded-[2px] border" style={{ color: '#EF4444', backgroundColor: '#450a0a', borderColor: '#991b1b' }}>⚠️ URGENT</span>}
+            </div>
+            <div className="flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-[2px] border" style={{ color: COLORS.textSoft, backgroundColor: COLORS.buttonBg, borderColor: COLORS.cardBorder }}>
+                {new Date(task.deadline).toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+            </div>
+          </div>
+          
+          <div className="flex justify-between items-end mt-1.5">
+            <div className="flex-1 min-w-0 mr-4 flex flex-col">
+              <span className={`text-[10px] font-medium tracking-widest uppercase ${task.status === 'done' ? 'line-through text-slate-600' : 'text-slate-400'}`}>{task.type}</span>
+              {task.details && (
+                <span className={`text-[11px] font-light truncate mt-0.5 ${task.status === 'done' ? 'text-slate-600' : 'text-slate-500'}`}>{task.details}</span>
+              )}
+            </div>
+
+            {isAdmin ? (
+              <div className="flex gap-1.5">
+                <button onClick={(e) => onToggleDoing(e, task.id)} className={`relative w-[28px] h-[28px] rounded-[4px] flex items-center justify-center transition-all active:scale-90`} style={{ color: task.status === 'doing' ? COLORS.pinkDeep : '#475569', backgroundColor: task.status === 'doing' ? '#082f49' : COLORS.buttonBg, borderWidth: '1px', borderColor: task.status === 'doing' ? COLORS.pinkDeep : COLORS.cardBorder, boxShadow: task.status === 'doing' ? '0 0 10px rgba(56,189,248,0.4)' : 'none' }}>
+                  <div className={`${task.status === 'doing' ? 'animate-spin-slow' : ''} flex items-center justify-center`}>
+                    <IconLoader size={14} />
+                  </div>
+                </button>
+                <button onClick={(e) => onToggleStatus(e, task.id)} className={`relative w-[28px] h-[28px] rounded-[4px] flex items-center justify-center transition-all active:scale-90`} style={{ color: task.status === 'done' ? '#10B981' : '#475569', backgroundColor: task.status === 'done' ? '#064e3b' : COLORS.buttonBg, borderWidth: '1px', borderColor: task.status === 'done' ? '#059669' : COLORS.cardBorder }}>
+                  <IconCheck size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center">
+                {task.status === 'doing' && <span className="text-[9px] font-bold text-[#38BDF8] flex items-center gap-1 px-2 py-1 rounded-[2px] border border-[#0284c7] bg-[#0c4a6e] shadow-[0_0_8px_rgba(56,189,248,0.3)]"><IconLoader size={10} className="animate-spin-slow"/> PROCESSING</span>}
+                {task.status === 'done' && <span className="text-[9px] font-bold text-[#10B981] flex items-center gap-1 px-2 py-1 rounded-[2px] border border-[#059669] bg-[#064e3b]"><IconCheck size={10} /> COMPLETED</span>}
+                {task.status === 'todo' && <span className="text-[9px] font-bold text-slate-500 flex items-center gap-1 px-2 py-1 rounded-[2px] border border-slate-700 bg-slate-800"><IconClock size={10} /> STANDBY</span>}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    ));
+
+    // ==========================================
+    // 📅 COMPONENT: CalendarView (ปฏิทิน)
+    // ==========================================
+    const CalendarView = React.memo(({ currentMonth, setCurrentMonth, selectedDate, setSelectedDate, today, tasks }) => {
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay(); 
+
+      const days = [];
+      for (let i = 0; i < firstDay; i++) days.push(null); 
+      for (let i = 1; i <= daysInMonth; i++) days.push(i);
+
+      const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+
+      return (
+        <div className="rounded-xl p-5 mb-5 animate-fadeIn" style={{ backgroundColor: `${COLORS.calendarBg}`, borderWidth: '1px', borderColor: COLORS.cardBorder, boxShadow: '0 0 20px rgba(30,58,138,0.2)' }}>
+          <div className="flex justify-between items-center mb-4 px-2">
+            <button onClick={() => setCurrentMonth(new Date(year, month - 1, 1))} className="p-1.5 hover:bg-[#1E293B] rounded-md transition-colors text-slate-400"><IconChevronLeft size={20}/></button>
+            <h3 className="font-bold text-[14px] text-white tracking-[0.2em] drop-shadow-[0_0_5px_rgba(255,255,255,0.5)]">{monthNames[month]} {year}</h3>
+            <button onClick={() => setCurrentMonth(new Date(year, month + 1, 1))} className="p-1.5 hover:bg-[#1E293B] rounded-md transition-colors text-slate-400"><IconChevronRight size={20}/></button>
+          </div>
+          
+          <div className="grid grid-cols-7 gap-1 text-center mb-3">
+            {['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'].map(d => (
+              <div key={d} className="text-[9px] font-bold text-slate-500 opacity-80 uppercase tracking-widest">{d}</div>
+            ))}
+          </div>
+          
+          <div className="grid grid-cols-7 gap-y-3 gap-x-1 text-center">
+            {days.map((day, index) => {
+              if (!day) return <div key={`empty-${index}`} className="h-10"></div>;
+              
+              const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const isSelected = selectedDate === dateStr;
+              const isToday = today === dateStr;
+              const hasTasks = tasks.some(t => t.deadline === dateStr); 
+
+              return (
+                <div key={dateStr} className="flex justify-center items-center h-10">
+                  <div 
+                    onClick={() => setSelectedDate(dateStr)} 
+                    className={`relative w-9 h-9 flex flex-col items-center justify-center cursor-pointer transition-all rounded-[4px] ${
+                      isSelected 
+                        ? 'bg-[#0EA5E9] text-white font-black shadow-[0_0_10px_#0EA5E9] border border-[#7DD3FC]'
+                        : isToday 
+                          ? 'text-[#38BDF8] font-black bg-[#0F172A] border border-[#38BDF8]'
+                          : 'text-slate-400 font-medium hover:bg-[#1E293B] border border-transparent hover:border-slate-700'
+                    }`}
+                  >
+                    <span className="text-[12px] z-10 leading-none">{day}</span>
+                    {hasTasks && (
+                      <div className="absolute bottom-1 w-1 h-1 rounded-sm" style={{ backgroundColor: isSelected ? '#FFFFFF' : '#38BDF8', boxShadow: isSelected ? 'none' : '0 0 4px #38BDF8' }}></div> 
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      );
+    });
+
+    // ==========================================
+    // 🏠 MAIN APP COMPONENT
+    // ==========================================
+    function App() {
+      // ===== STATE: ข้อมูลหลัก =====
+      const [tasks, setTasks] = useState([]);
+      const [taskTypes, setTaskTypes] = useState(['Logo', 'Banner', 'Artwork']); 
+      const [channels, setChannels] = useState(['LINE', 'FB', 'IG']); 
+      
+      const [isLoading, setIsLoading] = useState(true);
+      const [isSaving, setIsSaving] = useState(false); 
+      
+      const [view, setView] = useState('dashboard');
+      const [isCalendarView, setIsCalendarView] = useState(false);
+      const [currentMonth, setCurrentMonth] = useState(new Date());
+      const [selectedDate, setSelectedDate] = useState(() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      });
+      
+      const [showModal, setShowModal] = useState(false);     
+      const [editingTask, setEditingTask] = useState(null);  
+      const [taskToDelete, setTaskToDelete] = useState(null);
+      const [showAuthModal, setShowAuthModal] = useState(false);   
+      const [showImageModal, setShowImageModal] = useState(false); 
+      const [showBannerModal, setShowBannerModal] = useState(false); 
+      
+      const [searchQuery, setSearchQuery] = useState('');
+      const [filterType, setFilterType] = useState('all');
+      
+      const [isAdmin, setIsAdmin] = useState(false);
+      const [password, setPassword] = useState('');
+      const [authError, setAuthError] = useState(false);
+      const [isVerifyingAuth, setIsVerifyingAuth] = useState(false);
+      
+      const [profileImage, setProfileImage] = useState(null);
+      const [tempImageUrl, setTempImageUrl] = useState('');   
+      const [bannerImage, setBannerImage] = useState(null);   
+      const [tempBannerUrl, setTempBannerUrl] = useState(''); 
+      const [isBannerVisible, setIsBannerVisible] = useState(true);
+      
+      const [selectedNextDate, setSelectedNextDate] = useState(''); 
+      const [isBouncing, setIsBouncing] = useState(false); 
+
+      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyyeVDaflUdrvVNedbh6_9U829F_7JASoz-4CVe6JFqar54JdIAf3JEaWunMRwVp2Dn8g/exec";
+
+      const fetchAPI = async (payload) => {
+        try {
+          const res = await fetch(WEB_APP_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(payload)
+          });
+          return await res.json();
+        } catch (error) {
+          console.error("API Error:", error);
+          throw error;
+        }
+      };
+
+      useEffect(() => {
+        document.title = "KOSAME_WEBAPP"; 
+        
+        fetch(WEB_APP_URL + "?action=getInitialData")
+          .then(res => res.json())
+          .then(response => {
+            if (response.status === 'success') {
+              setTasks(response.data.tasks || []);
+              if (response.data.taskTypes && response.data.taskTypes.length > 0) setTaskTypes(response.data.taskTypes);
+              if (response.data.channels && response.data.channels.length > 0) setChannels(response.data.channels);
+              if (response.data.profileImage) setProfileImage(response.data.profileImage);
+              if (response.data.bannerImage) setBannerImage(response.data.bannerImage);
+              if (response.data.bannerVisible !== undefined) setIsBannerVisible(response.data.bannerVisible);
+              if (response.data.lockedNextDate) setSelectedNextDate(response.data.lockedNextDate);
+            }
+            setIsLoading(false);
+          })
+          .catch(error => {
+            console.error("Error loading data:", error);
+            setIsLoading(false);
+          });
+      }, []);
+
+      const handleAdminLogin = (e) => {
+        e.preventDefault();
+        setIsVerifyingAuth(true);
+        setAuthError(false);
+        fetchAPI({ action: 'verifyAdminPassword', inputPassword: password })
+          .then(res => {
+            setIsVerifyingAuth(false);
+            if (res.isValid) {
+              setIsAdmin(true); setShowAuthModal(false); setPassword(''); setAuthError(false);
+            } else setAuthError(true);
+          })
+          .catch(() => { setIsVerifyingAuth(false); setAuthError(true); });
+      };
+
+      const handleSetManualDate = useCallback((dateVal) => {
+        setSelectedNextDate(dateVal);
+        fetchAPI({ action: 'saveLockedNextDate', dateStr: dateVal }); 
+      }, []);
+      
+      const today = useMemo(() => {
+        const d = new Date();
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      }, []); 
+      
+      const todayTasks = useMemo(() => tasks.filter(t => t.deadline === today), [tasks, today]);
+      const doneToday = useMemo(() => todayTasks.filter(t => t.status === 'done').length, [todayTasks]);
+      const progress = todayTasks.length === 0 ? 0 : Math.round((doneToday / todayTasks.length) * 100);
+
+      const nextQueueDate = useMemo(() => {
+        if (selectedNextDate) return selectedNextDate;
+        let checkDate = new Date();
+        for (let i = 0; i < 365; i++) {
+          const y = checkDate.getFullYear(); 
+          const m = String(checkDate.getMonth() + 1).padStart(2, '0'); 
+          const d = String(checkDate.getDate()).padStart(2, '0'); 
+          const dateStr = `${y}-${m}-${d}`;
+          const tasksOnDate = tasks.filter(t => t.deadline === dateStr);
+          if (tasksOnDate.length === 0) return dateStr;
+          checkDate.setDate(checkDate.getDate() + 1);
+        }
+        return today;
+      }, [tasks, selectedNextDate]);
+
+      const waitingCount = useMemo(() => tasks.filter(t => t.status !== 'done').length, [tasks]);
+
+      const toggleStatus = useCallback((e, id) => {
+        e.stopPropagation();
+        setTasks(prev => prev.map(t => {
+            if (t.id === id) {
+              const newStatus = t.status === 'done' ? 'todo' : 'done';
+              fetchAPI({ action: 'updateTaskStatus', taskId: id, newStatus: newStatus });
+              return { ...t, status: newStatus };
+            }
+            return t;
+        }));
+      }, []);
+
+      const toggleDoing = useCallback((e, id) => {
+        e.stopPropagation();
+        setTasks(prev => prev.map(t => {
+            if (t.id === id) {
+              const newStatus = t.status === 'doing' ? 'todo' : 'doing';
+              fetchAPI({ action: 'updateTaskStatus', taskId: id, newStatus: newStatus });
+              return { ...t, status: newStatus };
+            }
+            return t;
+        }));
+      }, []);
+
+      const handleEditTask = useCallback((task) => {
+        setEditingTask(task);
+        setShowModal(true);
+      }, []);
+
+      const handleSaveTask = (e) => {
+        e.preventDefault();
+        setIsSaving(true);
+        const formData = new FormData(e.target);
+        const taskData = {
+          id: editingTask ? editingTask.id : null,
+          title: '', 
+          client: formData.get('client'),
+          type: formData.get('type'), 
+          channel: formData.get('channel'),
+          priority: formData.get('priority') ? 'urgent' : 'normal', 
+          deadline: formData.get('deadline'),
+          details: formData.get('details'),
+        };
+
+        fetchAPI({ action: 'saveOrUpdateTask', task: taskData })
+          .then(res => {
+             if (res.status === 'success') {
+                setTasks(prev => editingTask ? prev.map(t => t.id === res.task.id ? res.task : t) : [...prev, res.task]);
+             }
+             setIsSaving(false); setShowModal(false); setEditingTask(null);
+          })
+          .catch(() => { setIsSaving(false); });
+      };
+
+      const executeDeleteTask = () => {
+        if (!taskToDelete) return;
+        setIsSaving(true);
+        fetchAPI({ action: 'deleteTask', taskId: taskToDelete })
+          .then(() => {
+             setTasks(prev => prev.filter(t => t.id !== taskToDelete));
+             setIsSaving(false); setShowModal(false); setEditingTask(null); setTaskToDelete(null);
+          })
+          .catch(() => { setIsSaving(false); });
+      };
+
+      const toggleBannerVisibility = (visible) => {
+        setIsBannerVisible(visible);
+        fetchAPI({ action: 'saveBannerVisibility', isVisible: visible });
+      };
+
+      const triggerFlowerBounce = useCallback(() => { setIsBouncing(true); setTimeout(() => setIsBouncing(false), 500); }, []);
+      const handleImageUpload = useCallback(() => { setShowImageModal(true); }, []);
+
+      const filteredAllTasks = useMemo(() => tasks.filter(t => {
+        const matchSearch = t.type.toLowerCase().includes(searchQuery.toLowerCase()) || t.client.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchFilter = filterType === 'all' || (filterType === 'pending' && t.status !== 'done') || (filterType === 'done' && t.status === 'done');
+        return matchSearch && matchFilter;
+      }), [tasks, searchQuery, filterType]);
+
+      const displayedTasks = isCalendarView 
+        ? filteredAllTasks.filter(t => t.deadline === selectedDate) 
+        : filteredAllTasks;
+
+      // ==========================================
+      // 🔄 Loading Screen
+      // ==========================================
+      if (isLoading) {
+        return (
+          <div className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden" style={{ backgroundColor: COLORS.bg }}>
+             <DynamicBackground />
+             <div className="flex flex-col items-center z-10">
+               <div className="w-16 h-16 rounded-lg border-2 border-[#38BDF8] flex items-center justify-center mb-4 shadow-[0_0_20px_rgba(56,189,248,0.5)]">
+                 <IconLoader size={32} className="animate-spin-slow text-[#38BDF8]" />
+               </div>
+               <p className="text-[12px] font-bold tracking-[0.3em] text-[#60A5FA] uppercase animate-pulse">INITIALIZING SYSTEM...</p>
+             </div>
+          </div>
+        );
+      }
+
+      // ==========================================
+      // 🎨 MAIN RENDER
+      // ==========================================
+      return (
+        <div className="min-h-screen relative selection:bg-[#38BDF8] selection:text-[#050A15]" style={{ backgroundColor: COLORS.bg, color: COLORS.textMain }}>
+          <DynamicBackground />
+          <div className="max-w-md mx-auto min-h-screen relative pb-28">
+            <Header isAdmin={isAdmin} setIsAdmin={setIsAdmin} setShowAuthModal={setShowAuthModal} handleImageUpload={handleImageUpload} profileImage={profileImage} />
+            
+            {/* ===== Banner Section ===== */}
+            <div className="px-5 relative z-10 mb-4">
+               {bannerImage && isBannerVisible && (
+                 <div className="relative group w-full h-32 rounded-lg overflow-hidden" style={{ borderWidth: '1px', borderColor: COLORS.cardBorder, backgroundColor: COLORS.cardBg, boxShadow: '0 0 15px rgba(30,58,138,0.3)' }}>
+                    <img src={bannerImage} alt="Shop Banner" className="w-full h-full object-cover opacity-80 mix-blend-luminosity hover:mix-blend-normal transition-all" />
+                    <div className="absolute inset-0 border border-[#38BDF8]/30 pointer-events-none rounded-lg"></div>
+                    <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                       {isAdmin && (
+                         <button onClick={() => setShowBannerModal(true)} className="p-1.5 backdrop-blur-md rounded-md border text-slate-300 hover:text-white transition-colors" style={{ backgroundColor: `${COLORS.bannerOverlayBg}cc`, borderColor: COLORS.cardBorder }} title="เปลี่ยนแบนเนอร์">
+                            <IconImage size={16} />
+                         </button>
+                       )}
+                       {isAdmin && (
+                         <button onClick={() => toggleBannerVisibility(false)} className="p-1.5 backdrop-blur-md rounded-md border text-slate-300 hover:text-[#EF4444] transition-colors" style={{ backgroundColor: `${COLORS.bannerOverlayBg}cc`, borderColor: COLORS.cardBorder }} title="ซ่อนแบนเนอร์">
+                            <IconEyeOff size={16} />
+                         </button>
+                       )}
+                    </div>
+                 </div>
+               )}
+
+               {bannerImage && !isBannerVisible && isAdmin && (
+                 <div className="flex justify-end mb-1">
+                    <button onClick={() => toggleBannerVisibility(true)} className="text-[9px] font-bold flex items-center gap-1 px-3 py-1.5 rounded-[4px] border hover:bg-[#1E293B] transition-colors uppercase tracking-widest" style={{ color: COLORS.textSoft, backgroundColor: COLORS.buttonBg, borderColor: COLORS.cardBorder }}>
+                       <IconEye size={12} /> SHOW BANNER
+                    </button>
+                 </div>
+               )}
+
+               {!bannerImage && isAdmin && (
+                 <div onClick={() => setShowBannerModal(true)} className="w-full h-16 rounded-lg border-2 border-dashed flex items-center justify-center cursor-pointer hover:bg-[#1E293B] transition-colors" style={{ borderColor: COLORS.cardBorder, backgroundColor: COLORS.cardBg }}>
+                    <span className="text-[10px] font-bold flex items-center gap-2 uppercase tracking-widest" style={{ color: COLORS.textSoft }}><IconPlus size={16}/> SETUP BANNER</span>
+                 </div>
+               )}
+            </div>
+            
+            {/* ===== Main Content ===== */}
+            <div className="px-5 relative z-10">
+              {view === 'dashboard' ? (
+                <div className="animate-fadeIn">
+                  <div className="flex gap-3 h-28 mb-6">
+                    <div className="flex-[1.6]">
+                      <CompactStats isAdmin={isAdmin} selectedNextDate={selectedNextDate} nextQueueDate={nextQueueDate} handleSetManualDate={handleSetManualDate} waitingCount={waitingCount} />
+                    </div>
+                    <div className="flex-1">
+                      {/* วงแหวนประมวลผลข้อมูล */}
+                      <CyberSyncRing progress={progress} todayTasksLength={todayTasks.length} doneToday={doneToday} triggerFlowerBounce={triggerFlowerBounce} isBouncing={isBouncing} />
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mb-3 ml-1">
+                    <h2 className="text-[10px] font-bold text-[#38BDF8] uppercase tracking-[0.3em] flex items-center gap-2">
+                      <span className="w-1.5 h-1.5 bg-[#38BDF8] shadow-[0_0_5px_#38BDF8] rounded-sm"></span> ACTIVE TASKS
+                    </h2>
+                    <div className="h-[1px] flex-1 bg-gradient-to-r from-[#1E3A8A] to-transparent mx-3"></div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    {todayTasks.length > 0 ? todayTasks.map(t => <TaskCard key={t.id} task={t} isAdmin={isAdmin} onEdit={handleEditTask} onToggleDoing={toggleDoing} onToggleStatus={toggleStatus} />) : (
+                      <div className="text-center py-10 rounded-lg border border-dashed flex flex-col items-center justify-center" style={{ backgroundColor: COLORS.cardBg, borderColor: COLORS.cardBorder }}>
+                        <IconCheck size={24} className="text-slate-600 mb-2 opacity-50" />
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">SYSTEM STANDBY</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                /* ===== VIEW: All Tasks ===== */
+                <div className="animate-fadeIn">
+                  <div className="relative mb-4">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 opacity-60" style={{ color: COLORS.white }}><IconSearch size={16} /></div>
+                    <input type="text" placeholder="SEARCH DATABASE..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="w-full rounded-lg py-3.5 pl-11 pr-4 outline-none text-[11px] uppercase tracking-widest transition-all focus:border-[#38BDF8] focus:shadow-[0_0_10px_rgba(56,189,248,0.2)]" style={{ backgroundColor: COLORS.searchInputBg, borderWidth: '1px', borderColor: COLORS.cardBorder, color: COLORS.textMain }} />
+                  </div>
+                  
+                  <div className="flex gap-2 mb-4 p-1 rounded-lg border" style={{ backgroundColor: COLORS.filterBarBg, borderColor: COLORS.cardBorder }}>
+                      <button onClick={() => setFilterType('all')} className={`flex-1 text-[9px] font-bold py-2 rounded-[4px] transition-all tracking-widest uppercase ${filterType === 'all' ? 'bg-[#1E293B] text-[#38BDF8] border border-[#1E3A8A]' : 'text-slate-500 border border-transparent'}`}>ALL</button>
+                      <button onClick={() => setFilterType('pending')} className={`flex-1 text-[9px] font-bold py-2 rounded-[4px] transition-all tracking-widest uppercase ${filterType === 'pending' ? 'bg-[#1E293B] text-[#38BDF8] border border-[#1E3A8A]' : 'text-slate-500 border border-transparent'}`}>PENDING</button>
+                      <button onClick={() => setFilterType('done')} className={`flex-1 text-[9px] font-bold py-2 rounded-[4px] transition-all tracking-widest uppercase ${filterType === 'done' ? 'bg-[#1E293B] text-[#10B981] border border-[#064E3B]' : 'text-slate-500 border border-transparent'}`}>DONE</button>
+                  </div>
+
+                  <div className="flex justify-end mb-4 pr-1">
+                    <button onClick={() => { 
+                      const newView = !isCalendarView;
+                      setIsCalendarView(newView); 
+                      if(newView) setFilterType('all'); 
+                    }} className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] border text-[9px] font-bold uppercase tracking-widest hover:bg-[#1E293B] transition-all" style={{ color: COLORS.textSoft, backgroundColor: COLORS.buttonBg, borderColor: COLORS.cardBorder }}>
+                      {isCalendarView ? <><IconList size={12} /> LIST VIEW</> : <><IconCalendar size={12} /> CALENDAR</>}
+                    </button>
+                  </div>
+
+                  {isCalendarView && <CalendarView currentMonth={currentMonth} setCurrentMonth={setCurrentMonth} selectedDate={selectedDate} setSelectedDate={setSelectedDate} today={today} tasks={tasks} />}
+
+                  <div className="space-y-2">
+                    {displayedTasks.length > 0 ? displayedTasks.map(t => <TaskCard key={t.id} task={t} isAdmin={isAdmin} onEdit={handleEditTask} onToggleDoing={toggleDoing} onToggleStatus={toggleStatus} />) : (
+                      <div className="text-center py-10 rounded-lg border border-dashed flex flex-col items-center justify-center mt-4" style={{ backgroundColor: COLORS.cardBg, borderColor: COLORS.cardBorder }}>
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                          {isCalendarView ? "NO DATA FOUND" : "DATABASE EMPTY"}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* ===== Bottom Navigation Bar ===== */}
+            <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-full max-w-[210px] z-50">
+              <div className="rounded-xl h-14 shadow-[0_0_20px_rgba(0,0,0,0.8)] flex items-center justify-between px-6 relative border" style={{ backgroundColor: `${COLORS.navBarBg}E6`, borderColor: COLORS.cardBorder, backdropFilter: 'blur(10px)' }}>
+                  <button onClick={() => setView('dashboard')} className={`p-2 transition-all rounded-md ${view === 'dashboard' ? 'text-[#38BDF8] bg-[#1E293B] shadow-[inset_0_0_10px_rgba(56,189,248,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}>
+                    <IconHome size={20} />
+                  </button>
+                  <div className="w-8"></div>
+                  <button onClick={() => setView('all')} className={`p-2 transition-all rounded-md ${view === 'all' ? 'text-[#38BDF8] bg-[#1E293B] shadow-[inset_0_0_10px_rgba(56,189,248,0.2)]' : 'text-slate-500 hover:text-slate-300'}`}>
+                    <IconFileText size={20} />
+                  </button>
+                  {isAdmin && (
+                    <div className="absolute left-1/2 -translate-x-1/2 -top-5">
+                      <button onClick={() => { setEditingTask(null); setShowModal(true); }} className="w-12 h-12 rounded-[10px] text-[#050A15] flex items-center justify-center active:scale-95 transition-all shadow-[0_0_15px_#38BDF8] hover:shadow-[0_0_25px_#38BDF8]" style={{ backgroundColor: COLORS.pinkDeep, transform: 'rotate(45deg)' }}>
+                        <div style={{ transform: 'rotate(-45deg)' }}>
+                           <IconPlus size={24} />
+                        </div>
+                      </button>
+                    </div>
+                  )}
+              </div>
+            </div>
+
+            {/* ==========================================
+                🪟 MODAL: เพิ่ม/แก้ไขงาน
+                ========================================== */}
+            {showModal && (
+              <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                <form onSubmit={handleSaveTask} className="w-full max-w-xs rounded-xl p-6 shadow-2xl animate-slideUp border relative overflow-hidden" style={{ backgroundColor: COLORS.modalBg, borderColor: COLORS.cardBorder }}>
+                   <div className="absolute top-0 left-0 w-full h-1 bg-[#38BDF8] shadow-[0_0_10px_#38BDF8]"></div>
+                   <h3 className="text-xs font-bold mb-5 text-center text-[#38BDF8] tracking-[0.2em] uppercase">{editingTask ? 'EDIT RECORD' : 'NEW ENTRY'}</h3>
+                   <div className="space-y-3 relative">
+                     {isSaving && (
+                        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center rounded-lg backdrop-blur-md bg-[#050A15]/80">
+                           <IconLoader size={32} className="animate-spin-slow text-[#38BDF8]" />
+                           <span className="text-[9px] font-bold mt-3 text-[#60A5FA] tracking-widest uppercase">PROCESSING...</span>
+                        </div>
+                     )}
+                     
+                     <div className="flex justify-end mb-2">
+                       <label className="flex items-center cursor-pointer gap-2 px-3 py-1.5 rounded-[4px] border border-[#1E3A8A] bg-[#0F172A]">
+                         <span className="text-[9px] font-bold text-slate-400 tracking-widest uppercase">URGENT</span>
+                         <div className="relative">
+                           <input type="checkbox" name="priority" value="urgent" defaultChecked={editingTask?.priority === 'urgent'} className="sr-only peer" />
+                           <div className="w-7 h-3.5 bg-slate-700 peer-focus:outline-none rounded-[2px] peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-[#38BDF8] after:rounded-[1px] after:h-2.5 after:w-3 after:transition-all peer-checked:bg-[#1E3A8A]"></div>
+                         </div>
+                       </label>
+                     </div>
+
+                     <input name="client" required defaultValue={editingTask?.client || ''} className="w-full p-3 rounded-md border outline-none text-[11px] transition-all focus:border-[#38BDF8] focus:shadow-[0_0_8px_rgba(56,189,248,0.2)]" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="CLIENT NAME" />
+                     
+                     <div className="flex flex-col gap-3">
+                        <input list="taskTypesList" name="type" required defaultValue={editingTask?.type || ''} className="w-full p-3 rounded-md font-medium text-[10px] outline-none border tracking-widest uppercase focus:border-[#38BDF8]" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="TASK TYPE" />
+                        <datalist id="taskTypesList">{taskTypes.map(type => <option key={type} value={type} />)}</datalist>
+
+                        <input list="channelsList" name="channel" required defaultValue={editingTask?.channel || ''} className="w-full p-3 rounded-md font-medium text-[10px] outline-none border tracking-widest uppercase focus:border-[#38BDF8]" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="CHANNEL" />
+                        <datalist id="channelsList">{channels.map(ch => <option key={ch} value={ch} />)}</datalist>
+                     </div>
+
+                     <textarea name="details" rows="2" defaultValue={editingTask?.details || ''} className="w-full p-3 rounded-md border outline-none text-[11px] transition-all focus:border-[#38BDF8] resize-none" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="ADDITIONAL DETAILS..."></textarea>
+                     
+                     <div className="flex items-center justify-between p-2 pl-3 rounded-md border transition-all" style={{ backgroundColor: '#0A1120', borderColor: '#1E3A8A' }}>
+                       <div className="flex items-center gap-2 text-[9px] uppercase tracking-widest font-bold text-slate-400">
+                         <IconCalendar size={12} /><span>DEADLINE</span>
+                       </div>
+                       <input name="deadline" type="date" required defaultValue={editingTask?.deadline || nextQueueDate} className="w-[120px] p-2 rounded-[4px] border outline-none text-[10px] font-bold shadow-sm focus:border-[#38BDF8] transition-all cursor-pointer" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: '#38BDF8' }} />
+                     </div>
+                     
+                     <div className="flex items-center gap-2 mt-4">
+                       <button type="submit" className="flex-1 py-3.5 rounded-md font-bold text-[10px] text-[#050A15] tracking-widest uppercase active:scale-95 transition-all shadow-[0_0_10px_rgba(56,189,248,0.3)] hover:shadow-[0_0_15px_rgba(56,189,248,0.5)]" style={{ backgroundColor: COLORS.pinkDeep }}>SAVE RECORD</button>
+                       {editingTask && (
+                         <button type="button" onClick={() => setTaskToDelete(editingTask.id)} className="w-12 h-[42px] flex items-center justify-center rounded-md bg-[#450a0a] text-[#EF4444] border border-[#991b1b] hover:bg-[#7f1d1d] active:scale-95 transition-all" title="Delete">
+                           <IconTrash size={16} />
+                         </button>
+                       )}
+                     </div>
+                     <button type="button" onClick={() => { setShowModal(false); setEditingTask(null); }} className="w-full text-[9px] font-bold text-slate-500 mt-2 uppercase tracking-widest hover:text-slate-300">ABORT</button>
+                   </div>
+                </form>
+              </div>
+            )}
+
+            {/* ==========================================
+                🔐 MODAL: Login Admin
+                ========================================== */}
+            {showAuthModal && (
+              <div className="fixed inset-0 z-[110] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                <form onSubmit={handleAdminLogin} className="w-full max-w-xs rounded-xl p-6 shadow-2xl animate-slideUp border relative overflow-hidden" style={{ backgroundColor: COLORS.modalBg, borderColor: COLORS.cardBorder }}>
+                   <div className="absolute top-0 left-0 w-full h-1 bg-[#38BDF8]"></div>
+                   <h3 className="text-xs font-bold mb-4 text-center text-white tracking-[0.2em] uppercase">SYSTEM LOGIN</h3>
+                   <div className="space-y-3">
+                     <input type="password" required value={password} onChange={(e) => { setPassword(e.target.value); setAuthError(false); }} className={`w-full p-3.5 rounded-md border outline-none text-[12px] transition-all text-center tracking-[0.3em] ${authError ? 'border-[#EF4444] text-[#EF4444]' : 'border-[#1E3A8A] text-[#38BDF8] focus:border-[#38BDF8]'}`} style={{ backgroundColor: COLORS.cardInner }} placeholder="PASSWORD" disabled={isVerifyingAuth} />
+                     {authError && <p className="text-[#EF4444] text-[9px] text-center font-bold tracking-widest uppercase">ACCESS DENIED</p>}
+                     <button type="submit" disabled={isVerifyingAuth} className="w-full h-11 rounded-md font-bold text-[10px] tracking-widest mt-2 text-[#050A15] flex items-center justify-center active:scale-95 transition-all disabled:opacity-70 shadow-[0_0_10px_rgba(56,189,248,0.3)]" style={{ backgroundColor: COLORS.pinkDeep }}>
+                        {isVerifyingAuth ? <IconLoader size={16} className="animate-spin-slow" /> : 'AUTHORIZE'}
+                     </button>
+                     <button type="button" onClick={() => { setShowAuthModal(false); setAuthError(false); setPassword(''); }} className="w-full text-[9px] font-bold text-slate-500 mt-2 uppercase tracking-widest hover:text-slate-300" disabled={isVerifyingAuth}>CANCEL</button>
+                   </div>
+                </form>
+              </div>
+            )}
+
+            {/* ==========================================
+                🖼️ MODAL: เปลี่ยนรูปโปรไฟล์
+                ========================================== */}
+            {showImageModal && (
+              <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                <form onSubmit={(e) => { 
+                    e.preventDefault(); 
+                    if (tempImageUrl) { 
+                        let finalUrl = tempImageUrl;
+                        const match = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || finalUrl.match(/id=([a-zA-Z0-9_-]+)/) || finalUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            finalUrl = `https://lh3.googleusercontent.com/d/$${match[1]}`;
+                        }
+                        setProfileImage(finalUrl); 
+                        fetchAPI({ action: 'saveProfileImage', imageUrl: finalUrl });
+                    } 
+                    setShowImageModal(false); 
+                    setTempImageUrl(''); 
+                }} className="w-full max-w-xs rounded-xl p-6 shadow-2xl animate-slideUp border relative overflow-hidden" style={{ backgroundColor: COLORS.modalBg, borderColor: COLORS.cardBorder }}>
+                   <div className="absolute top-0 left-0 w-full h-1 bg-[#38BDF8]"></div>
+                   <h3 className="text-xs font-bold mb-4 text-center text-[#38BDF8] tracking-[0.2em] uppercase">AVATAR SETUP</h3>
+                   <div className="space-y-3">
+                     <input type="url" required value={tempImageUrl} onChange={(e) => setTempImageUrl(e.target.value)} className="w-full p-3 rounded-md border outline-none text-[10px] transition-all text-center focus:border-[#38BDF8]" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="IMG URL..." />
+                     <button type="submit" className="w-full py-3.5 rounded-md font-bold text-[10px] tracking-widest mt-2 text-[#050A15] shadow-[0_0_10px_rgba(56,189,248,0.3)] active:scale-95 transition-all" style={{ backgroundColor: COLORS.pinkDeep }}>UPDATE</button>
+                     <button type="button" onClick={() => { setShowImageModal(false); setTempImageUrl(''); }} className="w-full text-[9px] font-bold text-slate-500 mt-2 uppercase tracking-widest hover:text-slate-300">CANCEL</button>
+                   </div>
+                </form>
+              </div>
+            )}
+
+            {/* ==========================================
+                🖼️ MODAL: เปลี่ยนแบนเนอร์ร้าน
+                ========================================== */}
+            {showBannerModal && (
+              <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                <form onSubmit={(e) => { 
+                    e.preventDefault(); 
+                    if (tempBannerUrl) { 
+                        let finalUrl = tempBannerUrl;
+                        const match = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || finalUrl.match(/id=([a-zA-Z0-9_-]+)/) || finalUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) {
+                            finalUrl = `https://lh3.googleusercontent.com/d/$${match[1]}`;
+                        }
+                        setBannerImage(finalUrl); 
+                        toggleBannerVisibility(true);
+                        fetchAPI({ action: 'saveBannerImage', imageUrl: finalUrl });
+                    } 
+                    setShowBannerModal(false); 
+                    setTempBannerUrl(''); 
+                }} className="w-full max-w-xs rounded-xl p-6 shadow-2xl animate-slideUp border relative overflow-hidden" style={{ backgroundColor: COLORS.modalBg, borderColor: COLORS.cardBorder }}>
+                   <div className="absolute top-0 left-0 w-full h-1 bg-[#38BDF8]"></div>
+                   <h3 className="text-xs font-bold mb-4 text-center text-[#38BDF8] tracking-[0.2em] uppercase">BANNER SETUP</h3>
+                   <div className="space-y-3">
+                     <input type="url" required value={tempBannerUrl} onChange={(e) => setTempBannerUrl(e.target.value)} className="w-full p-3 rounded-md border outline-none text-[10px] transition-all text-center focus:border-[#38BDF8]" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="IMG URL..." />
+                     <button type="submit" className="w-full py-3.5 rounded-md font-bold text-[10px] tracking-widest mt-2 text-[#050A15] shadow-[0_0_10px_rgba(56,189,248,0.3)] active:scale-95 transition-all" style={{ backgroundColor: COLORS.pinkDeep }}>UPDATE</button>
+                     <button type="button" onClick={() => { setShowBannerModal(false); setTempBannerUrl(''); }} className="w-full text-[9px] font-bold text-slate-500 mt-2 uppercase tracking-widest hover:text-slate-300">CANCEL</button>
+                   </div>
+                </form>
+              </div>
+            )}
+
+            {/* ==========================================
+                🗑️ MODAL: ยืนยันการลบงาน
+                ========================================== */}
+            {taskToDelete && (
+              <div className="fixed inset-0 z-[200] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
+                <div className="w-full max-w-[260px] rounded-xl p-6 shadow-2xl animate-slideUp text-center border relative overflow-hidden" style={{ backgroundColor: COLORS.modalBg, borderColor: '#991b1b' }}>
+                  <div className="absolute top-0 left-0 w-full h-1 bg-[#EF4444] shadow-[0_0_10px_#EF4444]"></div>
+                  <div className="w-12 h-12 rounded-md bg-[#450a0a] text-[#EF4444] flex items-center justify-center mx-auto mb-4 border border-[#991b1b]">
+                     <IconTrash size={22} />
+                  </div>
+                  <h3 className="text-[12px] font-bold mb-2 text-white tracking-widest uppercase">CONFIRM DELETION?</h3>
+                  <p className="text-[9px] font-medium text-slate-400 mb-6 tracking-widest uppercase">This action cannot be undone.</p>
+                  
+                  <div className="flex gap-2">
+                    <button onClick={() => setTaskToDelete(null)} className="flex-1 py-3 rounded-md font-bold text-[9px] text-slate-300 bg-[#1E293B] border border-slate-700 hover:bg-slate-700 active:scale-95 transition-all tracking-widest">ABORT</button>
+                    <button onClick={executeDeleteTask} className="flex-1 py-3 rounded-md font-bold text-[9px] text-white bg-[#EF4444] hover:bg-red-600 active:scale-95 transition-all shadow-[0_0_10px_rgba(239,68,68,0.4)] tracking-widest">DELETE</button>
+                  </div>
+                </div>
+              </div>
+            )}
+
+          </div>
+          
+          {/* ==========================================
+              🎬 CSS Animations
+              ========================================== */}
+          <style>{`
+            @keyframes float { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(25px, -15px); } }
+            @keyframes float-reverse { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-25px, 15px); } }
+            @keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+            @keyframes float-particle-1 { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-20px); opacity: 0; } }
+            @keyframes float-particle-2 { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-15px) translateX(5px); opacity: 0; } }
+            @keyframes float-particle-3 { 0% { transform: translateY(0); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-25px) translateX(-5px); opacity: 0; } }
+            @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+            @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+            @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+            
+            .animate-breathe { animation: breathe 4s ease-in-out infinite; transform-origin: center; }
+            .animate-float-particle-1 { animation: float-particle-1 2s ease-out infinite; }
+            .animate-float-particle-2 { animation: float-particle-2 2.5s ease-out infinite 0.5s; }
+            .animate-float-particle-3 { animation: float-particle-3 3s ease-out infinite 1s; }
+            .animate-float { animation: float 15s ease-in-out infinite; }
+            .animate-float-reverse { animation: float-reverse 18s ease-in-out infinite; }
+            .animate-slideUp { animation: slideUp 0.3s ease-out; }
+            .animate-fadeIn { animation: fadeIn 0.4s ease-out; }
+            .animate-spin-slow { animation: spin-slow 3s linear infinite; }
+          `}</style>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
