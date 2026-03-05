@@ -135,20 +135,6 @@
             </div>
           </div>
           
-          <div onClick={isAdmin ? handleImageUpload : undefined} className={`w-14 h-14 rounded-md flex items-center justify-center relative overflow-hidden transition-transform ${isAdmin ? 'cursor-pointer hover:scale-105 active:scale-95' : ''}`} style={{ backgroundColor: COLORS.cardInner, borderWidth: '1px', borderColor: COLORS.profileBorder, boxShadow: '0 0 10px rgba(56,189,248,0.3)' }}>
-            {profileImage ? (
-              <img src={profileImage} alt="Profile" className="w-full h-full object-cover grayscale-[20%] contrast-125" />
-            ) : (
-              <>
-                <div className="absolute inset-0 opacity-20" style={{ background: `linear-gradient(to top right, ${COLORS.blueDeep}, ${COLORS.pinkDeep})` }}></div>
-                <span className="text-xl relative z-10 select-none opacity-80">🤖</span>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-    ));
-
     // ==========================================
     // 🛡️ COMPONENT: CyberSyncRing (วงแหวนประมวลผลข้อมูล)
     // ==========================================
@@ -429,8 +415,6 @@
       const [authError, setAuthError] = useState(false);
       const [isVerifyingAuth, setIsVerifyingAuth] = useState(false);
       
-      const [profileImage, setProfileImage] = useState(null);
-      const [tempImageUrl, setTempImageUrl] = useState('');   
       const [bannerImage, setBannerImage] = useState(null);   
       const [tempBannerUrl, setTempBannerUrl] = useState(''); 
       const [isBannerVisible, setIsBannerVisible] = useState(true);
@@ -838,36 +822,6 @@
             )}
 
             {/* ==========================================
-                🖼️ MODAL: เปลี่ยนรูปโปรไฟล์
-                ========================================== */}
-            {showImageModal && (
-              <div className="fixed inset-0 z-[120] flex items-center justify-center p-6 bg-black/60 backdrop-blur-sm animate-fadeIn">
-                <form onSubmit={(e) => { 
-                    e.preventDefault(); 
-                    if (tempImageUrl) { 
-                        let finalUrl = tempImageUrl;
-                        const match = finalUrl.match(/\/file\/d\/([a-zA-Z0-9_-]+)/) || finalUrl.match(/id=([a-zA-Z0-9_-]+)/) || finalUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-                        if (match && match[1]) {
-                            finalUrl = `https://lh3.googleusercontent.com/d/$${match[1]}`;
-                        }
-                        setProfileImage(finalUrl); 
-                        fetchAPI({ action: 'saveProfileImage', imageUrl: finalUrl });
-                    } 
-                    setShowImageModal(false); 
-                    setTempImageUrl(''); 
-                }} className="w-full max-w-xs rounded-xl p-6 shadow-2xl animate-slideUp border relative overflow-hidden" style={{ backgroundColor: COLORS.modalBg, borderColor: COLORS.cardBorder }}>
-                   <div className="absolute top-0 left-0 w-full h-1 bg-[#38BDF8]"></div>
-                   <h3 className="text-xs font-bold mb-4 text-center text-[#38BDF8] tracking-[0.2em] uppercase">AVATAR SETUP</h3>
-                   <div className="space-y-3">
-                     <input type="url" required value={tempImageUrl} onChange={(e) => setTempImageUrl(e.target.value)} className="w-full p-3 rounded-md border outline-none text-[10px] transition-all text-center focus:border-[#38BDF8]" style={{ backgroundColor: COLORS.cardInner, borderColor: COLORS.cardBorder, color: COLORS.textMain }} placeholder="IMG URL..." />
-                     <button type="submit" className="w-full py-3.5 rounded-md font-bold text-[10px] tracking-widest mt-2 text-[#050A15] shadow-[0_0_10px_rgba(56,189,248,0.3)] active:scale-95 transition-all" style={{ backgroundColor: COLORS.pinkDeep }}>UPDATE</button>
-                     <button type="button" onClick={() => { setShowImageModal(false); setTempImageUrl(''); }} className="w-full text-[9px] font-bold text-slate-500 mt-2 uppercase tracking-widest hover:text-slate-300">CANCEL</button>
-                   </div>
-                </form>
-              </div>
-            )}
-
-            {/* ==========================================
                 🖼️ MODAL: เปลี่ยนแบนเนอร์ร้าน
                 ========================================== */}
             {showBannerModal && (
@@ -953,4 +907,5 @@
     root.render(<App />);
   </script>
 </body>
+
 </html>
